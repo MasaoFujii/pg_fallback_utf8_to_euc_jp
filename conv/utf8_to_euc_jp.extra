@@ -1,0 +1,4 @@
+#include "mb/pg_wchar.h"
+
+static const pg_local_to_utf ExtraULmapEUC_JP[] = {
+};
