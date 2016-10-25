@@ -11,6 +11,12 @@
 #include "conv/fallback_utf8_to_euc_jp.map"
 #include "funcapi.h"
 
+/*
+ * Use a question mark '?' as a fallback character
+ * when the source character in UTF-8 has no equivalent in EUC_JP.
+ */
+#define UTF8TOEUCJP_FALLBACK_CHAR 0x3f
+
 PG_MODULE_MAGIC;
 
 PG_FUNCTION_INFO_V1(pg_fallback_utf8_to_euc_jp);
@@ -28,7 +34,7 @@ Datum pg_fallback_utf8_to_euc_jp(PG_FUNCTION_ARGS);
  * Comparison routine to bsearch() for UTF-8 -> local code.
  */
 static int
-compare_utf_to_local(const void *p1, const void *p2)
+compare_fallback_utf_to_local(const void *p1, const void *p2)
 {
 	uint32		v1,
 				v2;
@@ -47,23 +53,21 @@ extra_fallback_utf8_to_euc_jp(uint32 utf)
 	const pg_utf_to_local *p;
 
 	p = bsearch(&utf, ExtraULmapEUC_JP, lengthof(ExtraULmapEUC_JP),
-				sizeof(pg_utf_to_local), compare_utf_to_local);
-	return p ? p->code : 0x3f;
+				sizeof(pg_utf_to_local), compare_fallback_utf_to_local);
+	return p ? p->code : UTF8TOEUCJP_FALLBACK_CHAR;
 }
 
 #if PG_VERSION_NUM < 90500
 /*
  * callback function for algorithmic encoding conversions (in either direction)
- *
- * if function returns zero, it does not know how to convert the code
  */
-typedef uint32 (*utf_local_conversion_func) (uint32 code);
+typedef uint32 (*fallback_utf_local_conversion_func) (uint32 code);
 
 /*
  * store 32bit character representation into multibyte stream
  */
 static inline unsigned char *
-pg_store_coded_char(unsigned char *dest, uint32 code)
+pg_fallback_store_coded_char(unsigned char *dest, uint32 code)
 {
 	if (code & 0xff000000)
 		*dest++ = code >> 24;
@@ -77,10 +81,10 @@ pg_store_coded_char(unsigned char *dest, uint32 code)
 }
 
 static void
-PgSimpleUtfToLocal(const unsigned char *utf, int len,
+FallbackUtfToLocal(const unsigned char *utf, int len,
 		   unsigned char *iso,
 		   const pg_utf_to_local *map, int mapsize,
-		   utf_local_conversion_func conv_func,
+		   fallback_utf_local_conversion_func conv_func,
 		   int encoding)
 {
 	uint32		iutf;
@@ -139,11 +143,11 @@ PgSimpleUtfToLocal(const unsigned char *utf, int len,
 
 		/* Now check ordinary map */
 		p = bsearch(&iutf, map, mapsize,
-					sizeof(pg_utf_to_local), compare_utf_to_local);
+					sizeof(pg_utf_to_local), compare_fallback_utf_to_local);
 
 		if (p)
 		{
-			iso = pg_store_coded_char(iso, p->code);
+			iso = pg_fallback_store_coded_char(iso, p->code);
 			continue;
 		}
 
@@ -154,7 +158,7 @@ PgSimpleUtfToLocal(const unsigned char *utf, int len,
 
 			if (converted)
 			{
-				iso = pg_store_coded_char(iso, converted);
+				iso = pg_fallback_store_coded_char(iso, converted);
 				continue;
 			}
 		}
@@ -191,7 +195,7 @@ pg_fallback_utf8_to_euc_jp(PG_FUNCTION_ARGS)
 			   extra_fallback_utf8_to_euc_jp,
 			   PG_EUC_JP);
 #else
-	PgSimpleUtfToLocal(src, len, dest,
+	FallbackUtfToLocal(src, len, dest,
 			   ULmapEUC_JP, lengthof(ULmapEUC_JP),
 			   extra_fallback_utf8_to_euc_jp,
 			   PG_EUC_JP);
