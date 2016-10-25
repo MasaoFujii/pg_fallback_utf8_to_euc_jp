@@ -7,6 +7,9 @@ pg_fallback_utf8_to_euc_jp is released under [the PostgreSQL License](https://op
 
 pg_fallback_utf8_to_euc_jpのライセンスは[the PostgreSQL License](https://opensource.org/licenses/postgresql)(BSDに似たライセンス)です。
 
+## Test Status
+[![Build Status](https://travis-ci.org/MasaoFujii/pg_fallback_utf8_to_euc_jp.svg?branch=master)](https://travis-ci.org/MasaoFujii/pg_fallback_utf8_to_euc_jp)
+
 ## Install
 
 Download the source archive of pg_fallback_utf8_to_euc_jp from
@@ -16,7 +19,7 @@ and then build and install it.
 [ここ](https://github.com/MasaoFujii/pg_fallback_utf8_to_euc_jp)からpg_fallback_utf8_to_euc_jpのソースをダウンロードして、
 以下のとおりコンパイルとインストールを行ってください。
 
-    $ cd pg_cheat_funcs
+    $ cd pg_fallback_utf8_to_euc_jp
     $ make USE_PGXS=1 PG_CONFIG=/opt/pgsql-X.Y.Z/bin/pg_config
     $ su
     # make USE_PGXS=1 PG_CONFIG=/opt/pgsql-X.Y.Z/bin/pg_config install
@@ -78,6 +81,6 @@ pg_conversionの変更をリセットし、pg_fallback_utf8_to_euc_jpのデー�
     =# DROP EXTENSION pg_fallback_utf8_to_euc_jp;
     =# \q
     
-    # cd <pg_bigm source directory>
+    # cd <pg_fallback_utf8_to_euc_jp source directory>
     # make USE_PGXS=1 PG_CONFIG=/opt/pgsql-X.Y.Z/bin/pg_config uninstall
     # exit
