@@ -1,19 +1,19 @@
-MODULE_big	= pg_utf8_to_euc_jp
-OBJS = pg_utf8_to_euc_jp.o
+MODULE_big	= pg_fallback_utf8_to_euc_jp
+OBJS = pg_fallback_utf8_to_euc_jp.o
 
-EXTENSION = pg_utf8_to_euc_jp
-DATA = pg_utf8_to_euc_jp--1.0.sql
+EXTENSION = pg_fallback_utf8_to_euc_jp
+DATA = pg_fallback_utf8_to_euc_jp--1.0.sql
 
-REGRESS = pg_utf8_to_euc_jp
+REGRESS = pg_fallback_utf8_to_euc_jp
 
-PGFILEDESC = "pg_utf8_to_euc_jp - encoding conversion from UTF-8 to EUC_JP"
+PGFILEDESC = "pg_fallback_utf8_to_euc_jp - encoding conversion from UTF-8 to EUC_JP"
 
 ifdef USE_PGXS
 PG_CONFIG = pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 else
-subdir = contrib/pg_utf8_to_euc_jp
+subdir = contrib/pg_fallback_utf8_to_euc_jp
 top_builddir = ../..
 include $(top_builddir)/src/Makefile.global
 include $(top_srcdir)/contrib/contrib-global.mk

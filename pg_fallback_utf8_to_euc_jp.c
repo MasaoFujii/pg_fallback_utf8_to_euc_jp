@@ -1,19 +1,19 @@
 /*-------------------------------------------------------------------------
  *
- * pg_utf8_to_euc_jp.c
+ * pg_fallback_utf8_to_euc_jp.c
  *   provides an encoding conversion from UTF-8 to EUC_JP
  *
  *-------------------------------------------------------------------------
  */
 #include "postgres.h"
 
-#include "conv/utf8_to_euc_jp.extra"
-#include "conv/utf8_to_euc_jp.map"
+#include "conv/fallback_utf8_to_euc_jp.extra"
+#include "conv/fallback_utf8_to_euc_jp.map"
 #include "funcapi.h"
 
 PG_MODULE_MAGIC;
 
-PG_FUNCTION_INFO_V1(pg_utf8_to_euc_jp);
+PG_FUNCTION_INFO_V1(pg_fallback_utf8_to_euc_jp);
 
 /*
  * The function prototypes are created as a part of PG_FUNCTION_INFO_V1
@@ -21,7 +21,7 @@ PG_FUNCTION_INFO_V1(pg_utf8_to_euc_jp);
  * here is necessary only for 9.3 or before.
  */
 #if PG_VERSION_NUM < 90400
-Datum pg_utf8_to_euc_jp(PG_FUNCTION_ARGS);
+Datum pg_fallback_utf8_to_euc_jp(PG_FUNCTION_ARGS);
 #endif
 
 /*
@@ -42,7 +42,7 @@ compare_utf_to_local(const void *p1, const void *p2)
  * Perform extra mapping of UTF-8 ranges to EUC_JP.
  */
 static uint32
-extra_utf8_to_euc_jp(uint32 utf)
+extra_fallback_utf8_to_euc_jp(uint32 utf)
 {
 	const pg_utf_to_local *p;
 
@@ -176,7 +176,7 @@ PgSimpleUtfToLocal(const unsigned char *utf, int len,
  * Convert string from UTF-8 to EUC_JP.
  */
 Datum
-pg_utf8_to_euc_jp(PG_FUNCTION_ARGS)
+pg_fallback_utf8_to_euc_jp(PG_FUNCTION_ARGS)
 {
 	unsigned char *src = (unsigned char *) PG_GETARG_CSTRING(2);
 	unsigned char *dest = (unsigned char *) PG_GETARG_CSTRING(3);
@@ -188,12 +188,12 @@ pg_utf8_to_euc_jp(PG_FUNCTION_ARGS)
 	UtfToLocal(src, len, dest,
 			   ULmapEUC_JP, lengthof(ULmapEUC_JP),
 			   NULL, 0,
-			   extra_utf8_to_euc_jp,
+			   extra_fallback_utf8_to_euc_jp,
 			   PG_EUC_JP);
 #else
 	PgSimpleUtfToLocal(src, len, dest,
 			   ULmapEUC_JP, lengthof(ULmapEUC_JP),
-			   extra_utf8_to_euc_jp,
+			   extra_fallback_utf8_to_euc_jp,
 			   PG_EUC_JP);
 #endif
 

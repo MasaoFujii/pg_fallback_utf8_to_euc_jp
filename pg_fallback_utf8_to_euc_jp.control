@@ -1,5 +1,5 @@
-# pg_utf8_to_euc_jp extension
+# pg_fallback_utf8_to_euc_jp extension
 comment = 'provides an encoding conversion from UTF-8 to EUC_JP'
 default_version = '1.0'
-module_pathname = '$libdir/pg_utf8_to_euc_jp'
+module_pathname = '$libdir/pg_fallback_utf8_to_euc_jp'
 relocatable = true
