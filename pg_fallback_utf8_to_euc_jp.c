@@ -1,7 +1,7 @@
 /*-------------------------------------------------------------------------
  *
  * pg_fallback_utf8_to_euc_jp.c
- *   provides an encoding conversion from UTF-8 to EUC_JP
+ *   provides yet another encoding conversion from UTF-8 to EUC_JP
  *
  *-------------------------------------------------------------------------
  */

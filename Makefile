@@ -6,7 +6,7 @@ DATA = pg_fallback_utf8_to_euc_jp--1.0.sql
 
 REGRESS = pg_fallback_utf8_to_euc_jp
 
-PGFILEDESC = "pg_fallback_utf8_to_euc_jp - encoding conversion from UTF-8 to EUC_JP"
+PGFILEDESC = "pg_fallback_utf8_to_euc_jp - provides yet another encoding conversion from UTF-8 to EUC_JP"
 
 ifdef USE_PGXS
 PG_CONFIG = pg_config
