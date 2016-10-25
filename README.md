@@ -84,3 +84,17 @@ pg_conversionの変更をリセットし、pg_fallback_utf8_to_euc_jpのデー�
     # cd <pg_fallback_utf8_to_euc_jp source directory>
     # make USE_PGXS=1 PG_CONFIG=/opt/pgsql-X.Y.Z/bin/pg_config uninstall
     # exit
+
+## pg_dump / pg_dumpall
+
+The dump file taken by pg_dump or pg_dumpall doesn't include any changes on
+pg_conversion. Therefore, you need to update pg_conversion catalog again
+so that pg_fallback_utf8_to_euc_jp can be used as the default encoding
+conversion from UTF-8 to EUC_JP, after restoring the database from the dump
+file.
+
+pg_dumpやpg_dumpallで取得されたダンプファイルには、
+pg_conversionの変更が含まれません。
+このため、ダンプファイルのリストア後に、再びpg_conversionを更新し、
+pg_fallback_utf8_to_euc_jpがUTF-8からEUC_JPへのデフォルトの
+文字コード変換として使われるようにする必要があります。
